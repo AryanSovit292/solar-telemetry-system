@@ -1,0 +1,141 @@
+Presentation Script — IoT-Driven AI Solar Power Prediction System
+Team: Aryan Sovit, Yashwanth Chandawat, Muhammed Faiz C K
+
+Estimated time: 7–8 minutes (9 slides)
+
+Speaking tips are in italics. Read the plain text naturally — don't memorize word-for-word, memorize the idea of each beat.
+
+Slide 1 — Title
+
+Open with energy, make eye contact, don't read the slide.
+
+"Good [morning/afternoon] everyone. We're presenting our capstone project — an IoT-driven AI system for predicting solar power generation, built specifically for the challenges of the Indian power grid. I'm [name], and with me are [teammate 1] and [teammate 2]. Over the next few minutes, we'll walk you through the problem we're solving, the hardware and AI behind our solution, and the real-world impact it can have."
+
+(~20 sec)
+
+Slide 2 — The Real-World Problem: Grid Instability
+
+Slow down here — this is the "why should anyone care" slide.
+
+"Let's start with the problem. India is investing heavily in solar power, but solar generation is inherently unpredictable. A cloud passing overhead, a sudden monsoon shift, or just normal weather variation can cause generation to swing wildly within minutes.
+
+The tools grid operators rely on today — standard weather forecasts — are macro-level. They tell you the weather for an entire city or region, but they completely miss the micro-climate right at a specific solar plant.
+
+This mismatch between what's predicted and what's actually happening causes real problems: frequency drops, blackouts, and — because operators can't trust the forecast — they're forced to keep expensive, polluting fossil-fuel backup plants running 'just in case.' That's the problem we set out to fix."
+
+(~45 sec)
+
+Slide 3 — The Solution: Real-Time IoT Telemetry + AI
+
+This is your thesis statement slide — say it with confidence.
+
+"Our solution has two halves working together. First, hyper-local edge sensing — we deploy physical IoT devices directly at the solar site, so we're capturing the actual conditions on the ground, not a regional guess.
+
+Second, we feed that continuous stream of real sensor data — irradiance, temperature, and electrical output — into a deep learning model, specifically an LSTM, or Long Short-Term Memory network, which is very good at learning patterns in sequences over time. That lets us forecast generation several hours ahead, using real ground-truth data instead of generic weather APIs."
+
+(~40 sec)
+
+Slide 4 — Integrated IoT Hardware Architecture
+
+This is the technical core — speak like you built it, not like you're reading a spec sheet.
+
+"Let's get into the hardware. At the center is an ESP32 microcontroller. We chose it because it has built-in Wi-Fi, enough pins to talk to all our sensors at once, and it's cheap and low-power enough to leave running at a plant site continuously. It acts as our edge device — reading every sensor and pushing the data out wirelessly.
+
+Then we have three sensors doing three different jobs:
+
+An irradiance sensor measures exactly how much sunlight is hitting the panel — that's the 'fuel' for generation, and our strongest predictive signal.
+A DS18B20 temperature sensor tracks the panel's surface temperature — because a hot panel is actually a less efficient panel, so this corrects for that.
+And an INA219 sensor measures the panel's actual current and voltage output — this is our ground truth, the real number we're trying to forecast.
+
+Together, these three signals give our AI model everything it needs to understand why generation is behaving the way it is — not just that it changed."
+
+(~60–70 sec)
+
+Slide 5 — End-to-End IoT-to-AI Data Pipeline
+
+Walk through this like a flow — use your hand to gesture left-to-right if presenting in person.
+
+"Here's how data actually flows through our system, in three stages.
+
+Step one, edge collection — the ESP32 reads all three sensors every minute and pushes that data into a local MySQL database.
+
+Step two, data processing — a Python script pulls those records, filters out night-time hours where there's no generation to predict, and scales the data into windows the model can learn from.
+
+Step three, AI prediction — our trained LSTM network takes those recent sequences and produces a rolling forecast of expected solar output, which gets logged for visualization."
+
+(~45 sec)
+
+Slide 6 — Model Evaluation Metrics
+
+This is where you prove rigor — don't rush the comparison point at the end, it's your strongest selling line.
+
+"To know if our model is actually good, we evaluate it with two standard metrics. RMSE, Root Mean Squared Error, which heavily penalizes big mistakes — important because a large forecasting error is exactly what causes grid imbalance. And MAE, Mean Absolute Error, which tells us the average size of our errors across all daylight hours.
+
+But the number that matters most to us is the comparison: when we tested our IoT-based approach against relying on a public weather API alone, our local sensor telemetry produced significantly lower error rates. That's the core proof that hyper-local hardware actually makes a measurable difference."
+
+(~40 sec)
+
+Slide 7 — Software Output: Power BI Control Dashboard
+
+This is the "show, don't tell" slide — if you have a screenshot or live dashboard, gesture to it here.
+
+"All of this feeds into a live Power BI dashboard that acts as an operational control room. Operators can see a side-by-side chart of actual generation from our IoT sensors versus what our AI predicted — so they can immediately see how well the model is tracking reality.
+
+We also built in proactive alerting — if there's a sudden weather shift or a drop in panel efficiency, the dashboard flags it visually, so operators can react before it becomes a grid problem."
+
+(~35 sec)
+
+Slide 8 — Delivered Business & Engineering Value
+
+Land the "so what" here — connect back to Slide 2's problem statement explicitly.
+
+"So what does this actually deliver? Three things. Grid resilience — operators get an early warning window to spin up storage or backup reserves before a drop happens, not after. Cost reduction — because forecasts are more trustworthy, plants can rely less on expensive fossil-fuel backup generation. And carbon efficiency — more clean solar energy gets reliably integrated into the grid, which directly reduces emissions.
+
+In short, this turns solar from an unpredictable variable into a resource the grid can actually plan around."
+
+(~40 sec)
+
+Slide 9 — Project Implementation Roadmap
+
+Close strong and confident — this is your last impression.
+
+"Finally, here's our implementation roadmap. Phase one is hardware and data: programming the ESP32, wiring up the pyranometer and temperature sensors, setting up our local MySQL database, and collecting baseline training logs.
+
+Phase two is AI and dashboard: training and tuning the LSTM network, validating it with RMSE and MAE, automating the full pipeline, and deploying the live Power BI control interface.
+
+That's our project — a complete pipeline from a $10 sensor on a solar panel, all the way to an AI-powered forecast that could help stabilize India's grid. Thank you — we're happy to take any questions."
+
+(~35 sec)
+
+Total: ~7 minutes core content (+ Q&A buffer)
+Delivery notes
+Splitting across 3 presenters: a natural 3-way split is Slides 1–3 (Speaker A: problem/solution), Slides 4–6 (Speaker B: hardware/pipeline/metrics), Slides 7–9 (Speaker C: dashboard/value/roadmap + closing).
+Pause after Slide 2 — let the problem land before moving to the solution.
+Slide 4 is the densest — practice it separately until you can say it without looking at notes.
+If asked a hardware question you're unsure of in Q&A, it's fine to say: "That's implemented in firmware on the ESP32 — happy to walk through the code afterward," rather than guessing live.
+
+
+------------------------
+Working of sensors;
+
+1. ESP32 Microcontroller
+
+Why: It's the only piece that needs to talk to all three other sensors at once — it has built-in Wi-Fi (so no separate networking module), enough GPIO pins to support analog, I2C, and OneWire protocols simultaneously, and it's cheap and low-power enough to leave running at the plant site continuously.
+How it works: It runs a firmware loop that reads all sensors every minute, packages the readings into a timestamped JSON payload, and pushes it out over Wi-Fi (via MQTT) into your MySQL database.
+
+2. Irradiance Sensor
+
+Why: Solar output is almost directly proportional to sunlight intensity — it's the single strongest predictive signal for the AI model. Without it, the model has no way to "see" the sunlight driving generation, only the result.
+How it works: A photodiode/pyranometer-style sensor outputs a voltage proportional to incoming solar radiation. The ESP32's ADC reads this as a raw value (0–4095), which gets converted to W/m² using a calibration curve built against a reference pyranometer.
+
+3. DS18B20 (Temperature Sensor)
+
+Why: Panels lose efficiency as they heat up (~0.4–0.5% per °C above 25°C). Two panels under identical sunlight can produce different power if one is hotter — without temperature data, the model can't explain that variance.
+How it works: It's a digital sensor communicating over the OneWire protocol — it has its own internal ADC, so it returns temperature directly in °C with no external calibration needed, unlike the irradiance sensor.
+
+4. INA219 (Current/Power Sensor)
+
+Why: This is your ground truth — the actual value the LSTM is trying to forecast. Everything else (irradiance, temperature) are predictors; this measures what's really being generated right now.
+How it works: It sits in series with the panel's output and measures the tiny voltage drop across a built-in shunt resistor to calculate current, plus separately measures bus voltage — both read over I2C. Power is then just V × I.
+
+The logic tying them together: irradiance = the cause, temperature = the correction factor, electrical output = the effect being measured and forecasted, and the ESP32 = the glue that captures all three in sync.
