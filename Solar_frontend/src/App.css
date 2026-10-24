@@ -1,38 +1,615 @@
-.App {
-  text-align: center;
+/* ==========================================================================
+   Responsive Solar Telemetry Dashboard Styles
+   Optimized for: Mobile (320px - 640px), Tablet (641px - 1024px), Laptop/PC (> 1024px)
+   ========================================================================== */
+
+:root {
+  --bg-main: #0b1120;
+  --bg-card: #1e293b;
+  --bg-card-subtle: #0f172a;
+  --border-card: #334155;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-heading: #e2e8f0;
+  
+  --color-amber: #f59e0b;
+  --color-indigo: #6366f1;
+  --color-indigo-dark: #4338ca;
+  --color-emerald: #10b981;
+  --color-sky: #38bdf8;
+  --color-rose: #ef4444;
+  --color-pink: #ec4899;
+  --color-blue: #2563eb;
+  --color-blue-hover: #1d4ed8;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* Global Mobile & Layout Safeguards */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-tap-highlight-color: transparent;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* Base Dashboard Container */
+.dashboard-container {
+  min-height: 100dvh;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: clamp(14px, 3vw, 24px);
+  padding-left: max(clamp(14px, 3vw, 24px), env(safe-area-inset-left));
+  padding-right: max(clamp(14px, 3vw, 24px), env(safe-area-inset-right));
+  background-color: var(--bg-main);
+  color: var(--text-main);
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* Header Section */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.header-title-area {
+  flex: 1 1 320px;
+  min-width: 0;
+}
+
+.dashboard-title {
+  font-size: clamp(1.2rem, 3.2vw, 1.65rem);
+  font-weight: 700;
+  margin: 0 0 6px 0;
+  color: #ffffff;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+.dashboard-subtitle {
+  color: var(--text-muted);
+  margin: 0;
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
+  line-height: 1.4;
+}
+
+/* Header Actions / Controls */
+.header-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* View Mode Segmented Switch */
+.view-toggle {
+  display: inline-flex;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: 9999px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.view-toggle-btn {
+  border: none;
+  padding: 7px 14px;
+  min-height: 36px;
+  border-radius: 9999px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.view-toggle-btn.active-consumer {
+  background-color: var(--color-amber);
+  color: #0b1120;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.view-toggle-btn.active-pro {
+  background-color: var(--color-indigo);
+  color: #ffffff;
+}
+
+.view-toggle-btn.inactive {
+  background-color: transparent;
+  color: var(--text-muted);
+}
+
+.view-toggle-btn:hover:not(.active-consumer):not(.active-pro) {
+  color: var(--text-main);
+}
+
+/* Export CSV Button */
+.btn-export {
+  background-color: var(--color-blue);
+  color: #ffffff;
+  border: none;
+  padding: 8px 16px;
+  min-height: 38px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+  white-space: nowrap;
+  touch-action: manipulation;
+}
+
+.btn-export:hover {
+  background-color: var(--color-blue-hover);
+}
+
+.btn-export:active {
+  transform: scale(0.98);
+}
+
+/* System Live Status Pill */
+.status-pill {
+  padding: 8px 14px;
+  min-height: 38px;
+  border-radius: 9999px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-card);
+  font-size: 12.5px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--text-main);
+  white-space: nowrap;
+}
+
+.status-indicator-dot {
+  height: 8px;
+  width: 8px;
+  border-radius: 50%;
+  background-color: var(--color-emerald);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+  animation: pulse-dot 2s infinite ease-in-out;
+}
+
+@keyframes pulse-dot {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
   }
-  to {
-    transform: rotate(360deg);
+  50% {
+    opacity: 0.4;
+    transform: scale(0.85);
+  }
+}
+
+/* Anomaly Simulator Panel */
+.anomaly-panel {
+  background: var(--bg-card);
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border-card);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.anomaly-label {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #cbd5e1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.anomaly-buttons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.btn-anomaly {
+  border: none;
+  padding: 7px 14px;
+  min-height: 36px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: opacity 0.15s ease, transform 0.1s ease;
+  touch-action: manipulation;
+}
+
+.btn-anomaly:hover {
+  opacity: 0.9;
+}
+
+.btn-anomaly:active {
+  transform: scale(0.97);
+}
+
+.btn-anomaly-cloud {
+  background-color: #0284c7;
+}
+
+.btn-anomaly-heat {
+  background-color: #dc2626;
+}
+
+/* Thermal Warning Advisory */
+.thermal-alert {
+  background-color: rgba(239, 68, 68, 0.15);
+  border: 1px solid var(--color-rose);
+  color: #fca5a5;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+/* ==========================================================================
+   Consumer View Layout
+   ========================================================================== */
+.consumer-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.ai-tip-card {
+  background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-card-subtle) 100%);
+  border: 1px solid var(--color-sky);
+  padding: clamp(14px, 2.5vw, 20px);
+  border-radius: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.ai-tip-icon {
+  font-size: clamp(26px, 4vw, 32px);
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.ai-tip-title {
+  margin: 0 0 6px 0;
+  color: var(--color-sky);
+  font-size: clamp(14px, 2.2vw, 16px);
+  font-weight: 700;
+}
+
+.ai-tip-body {
+  margin: 0;
+  color: #cbd5e1;
+  font-size: clamp(13px, 2vw, 14px);
+  line-height: 1.5;
+}
+
+.consumer-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.consumer-card {
+  background: var(--bg-card);
+  padding: clamp(16px, 2.5vw, 20px);
+  border-radius: 12px;
+  border: 1px solid var(--border-card);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.card-title {
+  color: var(--text-muted);
+  font-size: clamp(12px, 2vw, 13px);
+  font-weight: 500;
+}
+
+.consumer-value-savings {
+  font-size: clamp(1.5rem, 4vw, 1.85rem);
+  font-weight: 700;
+  color: var(--color-emerald);
+  margin: 8px 0 0 0;
+  line-height: 1.2;
+}
+
+.consumer-value-appliances {
+  font-size: clamp(1.25rem, 3.5vw, 1.45rem);
+  font-weight: 700;
+  color: var(--color-amber);
+  margin: 8px 0 0 0;
+  line-height: 1.2;
+}
+
+.consumer-subtext {
+  font-size: clamp(12px, 1.8vw, 13px);
+  color: var(--text-muted);
+  font-weight: normal;
+  display: block;
+  margin-top: 4px;
+}
+
+/* ==========================================================================
+   Pro View Metrics Grid
+   ========================================================================== */
+.pro-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.metric-card {
+  background: var(--bg-card);
+  padding: clamp(12px, 2.2vw, 16px);
+  border-radius: 10px;
+  border: 1px solid var(--border-card);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.metric-card:hover {
+  border-color: #475569;
+}
+
+.metric-card-ml {
+  border-color: var(--color-indigo);
+  background: linear-gradient(180deg, var(--bg-card) 0%, rgba(99, 102, 241, 0.08) 100%);
+}
+
+.metric-card-ml:hover {
+  border-color: #818cf8;
+}
+
+.metric-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.metric-label {
+  color: var(--text-muted);
+  font-size: clamp(11.5px, 2vw, 13px);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.metric-label-ml {
+  color: #a5b4fc;
+}
+
+.ml-tag {
+  font-size: 10px;
+  background-color: var(--color-indigo-dark);
+  color: #ffffff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.metric-value {
+  font-size: clamp(1.3rem, 3vw, 1.55rem);
+  font-weight: 700;
+  margin: 6px 0 0 0;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.metric-unit {
+  font-size: clamp(11px, 1.8vw, 13px);
+  color: var(--text-muted);
+  font-weight: normal;
+  margin-left: 4px;
+}
+
+/* Metric color variations */
+.metric-val-irradiance { color: var(--color-amber); }
+.metric-val-temp-normal { color: var(--color-sky); }
+.metric-val-temp-alert { color: var(--color-rose); }
+.metric-val-power { color: var(--color-emerald); }
+.metric-val-predicted { color: #818cf8; }
+.metric-val-efficiency { color: var(--color-pink); }
+.metric-val-peak { color: #34d399; }
+
+/* ==========================================================================
+   Telemetry Stream Chart Card
+   ========================================================================== */
+.chart-card {
+  background: var(--bg-card);
+  padding: clamp(14px, 2.5vw, 20px);
+  border-radius: 12px;
+  border: 1px solid var(--border-card);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chart-title {
+  font-size: clamp(13px, 2.2vw, 16px);
+  margin: 0;
+  color: var(--text-heading);
+  font-weight: 600;
+}
+
+.chart-wrapper {
+  width: 100%;
+  min-width: 0;
+  height: clamp(260px, 40vh, 370px);
+}
+
+/* ==========================================================================
+   Responsive Breakpoints & Mobile Adaptations
+   ========================================================================== */
+
+/* Laptops / Desktops (> 1024px) */
+@media (min-width: 1025px) {
+  .pro-metrics-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* Tablets & Small Laptops (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .pro-metrics-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Mobile & Small Tablets (<= 768px) */
+@media (max-width: 768px) {
+  .dashboard-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  .header-actions {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .view-toggle {
+    width: 100%;
+  }
+
+  .view-toggle-btn {
+    flex: 1;
+    min-height: 40px;
+    font-size: 13px;
+  }
+
+  .btn-export {
+    flex: 1 1 calc(50% - 4px);
+    min-height: 40px;
+  }
+
+  .status-pill {
+    flex: 1 1 calc(50% - 4px);
+    min-height: 40px;
+  }
+
+  .anomaly-panel {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .anomaly-buttons {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .btn-anomaly {
+    min-height: 40px;
+  }
+
+  .pro-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+}
+
+/* Extra Small Mobile Devices (<= 420px) */
+@media (max-width: 420px) {
+  .dashboard-container {
+    padding: 12px 10px;
+  }
+
+  .btn-export,
+  .status-pill {
+    flex: 1 1 100%;
+  }
+
+  .anomaly-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .pro-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .metric-card {
+    padding: 10px;
+  }
+
+  .metric-label {
+    font-size: 11px;
+  }
+
+  .metric-value {
+    font-size: 1.2rem;
+  }
+
+  .chart-wrapper {
+    height: 250px;
+  }
+}
+
+/* Extreme Compact Screens (<= 330px) */
+@media (max-width: 330px) {
+  .pro-metrics-grid {
+    grid-template-columns: 1fr;
   }
 }
