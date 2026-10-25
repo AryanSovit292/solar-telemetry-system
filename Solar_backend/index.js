@@ -8,9 +8,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// 1. Connect to MongoDB Atlas via Environment Variable
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('Connected to MongoDB'))
+// 1. Connect directly to MongoDB Atlas
+mongoose.connect('mongodb+srv://mohammedfaizck454_db_user:db_g32Oh8DEIaconupj@cluster0.xndcgpi.mongodb.net/solar_telemetry')
+  .then(() => console.log('Connected to MongoDB Atlas'))
   .catch(err => console.error('MongoDB Connection Error:', err));
 
 // 2. Define Telemetry Schema & Model
