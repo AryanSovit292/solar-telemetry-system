@@ -19,7 +19,7 @@ export default function App() {
 
   const fetchTelemetry = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/telemetry/recent');
+      const res = await axios.get('http://10.2.3.217:5000/api/telemetry/recent');
       setData(res.data);
 
       if (res.data.length > 0) {
