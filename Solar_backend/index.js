@@ -3,14 +3,18 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const { spawn } = require('child_process');
 const path = require('path');
+const axios = require('axios');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// 1. Connect directly to MongoDB Atlas
+// 1. Connect directly to MongoDB Atlas & Start 24/7 Cloud Telemetry Worker
 mongoose.connect('mongodb+srv://mohammedfaizck454_db_user:faizatlas454@cluster0.xndcgpi.mongodb.net/solar_telemetry')
-  .then(() => console.log('Connected to MongoDB Atlas'))
+  .then(() => {
+    console.log('Connected to MongoDB Atlas');
+    startCloudTelemetryStream();
+  })
   .catch(err => console.error('MongoDB Connection Error:', err));
 
 // 2. Define Telemetry Schema & Model
@@ -22,6 +26,32 @@ const telemetrySchema = new mongoose.Schema({
 });
 
 const Telemetry = mongoose.model('Telemetry', telemetrySchema);
+
+// Background Telemetry Generator (Runs 24/7 on Render without needing local VS Code)
+const startCloudTelemetryStream = () => {
+  setInterval(async () => {
+    try {
+      // Fetch live outdoor temp from Open-Meteo for Anekal / Bengaluru
+      const weatherRes = await axios.get('https://api.open-meteo.com/v1/forecast?latitude=12.88&longitude=77.70&current=temperature_2m', { timeout: 5000 });
+      const ambientTemp = weatherRes.data?.current?.temperature_2m || 28.0;
+
+      const panelTemp = parseFloat((ambientTemp + (Math.random() * 3 + 2)).toFixed(2));
+      const irradiance = parseFloat((Math.random() * 500 + 400).toFixed(2));
+      const powerW = parseFloat(((irradiance * 0.25) * (1 - (panel_temp - 25) * 0.004)).toFixed(2));
+
+      await Telemetry.create({
+        timestamp: new Date(),
+        irradiance_wm2: irradiance,
+        panel_temp_c: panelTemp,
+        power_w: Math.max(0.0, powerW)
+      });
+
+      console.log(`Cloud Telemetry Inserted -> Ambient: ${ambientTemp}°C | Power: ${powerW}W`);
+    } catch (err) {
+      console.error('Cloud telemetry background error:', err);
+    }
+  }, 5000); // Runs every 5 seconds in the cloud
+};
 
 // 3. API: Fetch Recent Telemetry Logs for Graph
 app.get('/api/telemetry/recent', async (req, res) => {
