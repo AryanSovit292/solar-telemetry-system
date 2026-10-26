@@ -9,7 +9,7 @@ app.use(cors());
 app.use(express.json());
 
 // 1. Connect directly to MongoDB Atlas
-mongoose.connect('mongodb+srv://mohammedfaizck454_db_user:db_g32Oh8DEIaconupj@cluster0.xndcgpi.mongodb.net/solar_telemetry')
+mongoose.connect('mongodb+srv://mohammedfaizck454_db_user:faizatlas454@cluster0.xndcgpi.mongodb.net/solar_telemetry')
   .then(() => console.log('Connected to MongoDB Atlas'))
   .catch(err => console.error('MongoDB Connection Error:', err));
 
