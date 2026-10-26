@@ -37,11 +37,11 @@ while True:
     power_w = round((irradiance * 0.25) * (1 - (panel_temp - 25) * 0.004), 2)
 
     telemetry_doc = {
-        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-        "irradiance_wm2": irradiance,
-        "panel_temp_c": panel_temp,
-        "power_w": max(0.0, power_w)
-    }
+      "timestamp": datetime.now(timezone.utc),
+      "irradiance_wm2": irradiance,
+      "panel_temp_c": panel_temp,
+      "power_w": max(0.0, power_w)
+  }
 
     # Save live data to MongoDB
     collection.insert_one(telemetry_doc)
