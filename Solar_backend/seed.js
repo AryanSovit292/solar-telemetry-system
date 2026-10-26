@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://127.0.0.1:27017/solar_telemetry')
+mongoose.connect('mongodb+srv://mohammedfaizck454_db_user:faizatlas454@cluster0.xndcgpi.mongodb.net/solar_telemetry')
   .then(() => console.log('Connected to MongoDB for 12-hour seeding...'))
   .catch(err => console.error('Connection error:', err));
 
