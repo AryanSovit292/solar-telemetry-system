@@ -4,7 +4,7 @@ import requests
 from pymongo import MongoClient
 
 # 1. Connect to MongoDB
-client = MongoClient("mongodb://127.0.0.1:27017/")
+client = MongoClient("mongodb+srv://mohammedfaizck454_db_user:faizatlas454@cluster0.xndcgpi.mongodb.net/solar_telemetry")
 db = client["solar_telemetry"]
 collection = db["telemetries"]
 
