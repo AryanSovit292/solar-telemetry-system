@@ -19,7 +19,7 @@
 
     const fetchTelemetry = async () => {
     try {
-      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+      const API_URL = "https://solar-telemetry-backend.onrender.com";
       const res = await axios.get(`${API_URL}/api/telemetry/recent`);
       setData(res.data);
 
@@ -33,7 +33,7 @@
 
     const fetchPrediction = async () => {
     try {
-      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+      const API_URL = "https://solar-telemetry-backend.onrender.com";
       const res = await axios.get(`${API_URL}/api/telemetry/predict`);
       if (res.data && res.data.predicted_power !== undefined) {
         let val = res.data.predicted_power;
@@ -52,7 +52,7 @@
 
     const injectAnomaly = async (type) => {
     try {
-      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+      const API_URL = "https://solar-telemetry-backend.onrender.com";
       await axios.post(`${API_URL}/api/telemetry/inject-anomaly`, { type });
       fetchTelemetry();
       fetchPrediction();
