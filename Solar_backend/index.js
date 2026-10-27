@@ -28,14 +28,24 @@ const telemetrySchema = new mongoose.Schema({
 const Telemetry = mongoose.model('Telemetry', telemetrySchema);
 
 // Background Telemetry Generator (Runs 24/7 on Render)
+// Background Telemetry Generator (Runs 24/7 on Render)
 const startCloudTelemetryStream = () => {
+  let cachedAmbientTemp = 28.0;
+
   setInterval(async () => {
     try {
-      // Fetch live outdoor temp from Open-Meteo for Anekal / Bengaluru
+      // Attempt to fetch live outdoor temp from Open-Meteo
       const weatherRes = await axios.get('https://api.open-meteo.com/v1/forecast?latitude=12.88&longitude=77.70&current=temperature_2m', { timeout: 5000 });
-      const ambientTemp = weatherRes.data?.current?.temperature_2m || 28.0;
+      if (weatherRes.data?.current?.temperature_2m) {
+        cachedAmbientTemp = weatherRes.data.current.temperature_2m;
+      }
+    } catch (err) {
+      // If rate limited (429) or offline, silently fall back to cached/default temp
+      console.log('Weather API rate limit or error, using cached temp:', cachedAmbientTemp);
+    }
 
-      const panelTemp = parseFloat((ambientTemp + (Math.random() * 3 + 2)).toFixed(2));
+    try {
+      const panelTemp = parseFloat((cachedAmbientTemp + (Math.random() * 3 + 2)).toFixed(2));
       const irradiance = parseFloat((Math.random() * 500 + 400).toFixed(2));
       const powerW = parseFloat(((irradiance * 0.25) * (1 - (panelTemp - 25) * 0.004)).toFixed(2));
 
@@ -46,7 +56,7 @@ const startCloudTelemetryStream = () => {
         power_w: Math.max(0.0, powerW)
       });
 
-      console.log(`Cloud Telemetry Inserted -> Ambient: ${ambientTemp}°C | Power: ${powerW}W`);
+      console.log(`Cloud Telemetry Inserted -> Ambient: ${cachedAmbientTemp}°C | Power: ${powerW}W`);
     } catch (err) {
       console.error('Cloud telemetry background error:', err);
     }
