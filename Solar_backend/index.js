@@ -27,7 +27,7 @@ const telemetrySchema = new mongoose.Schema({
 
 const Telemetry = mongoose.model('Telemetry', telemetrySchema);
 
-// Background Telemetry Generator (Runs 24/7 on Render without needing local VS Code)
+// Background Telemetry Generator (Runs 24/7 on Render)
 const startCloudTelemetryStream = () => {
   setInterval(async () => {
     try {
@@ -52,6 +52,11 @@ const startCloudTelemetryStream = () => {
     }
   }, 5000); // Runs every 5 seconds in the cloud
 };
+
+// Keep-alive route to prevent Render free tier from sleeping (Use with UptimeRobot)
+app.get('/ping', (req, res) => {
+  res.status(200).json({ status: 'active', timestamp: new Date() });
+});
 
 // 3. API: Fetch Recent Telemetry Logs for Graph
 app.get('/api/telemetry/recent', async (req, res) => {
