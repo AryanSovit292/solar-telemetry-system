@@ -37,7 +37,7 @@ const startCloudTelemetryStream = () => {
 
       const panelTemp = parseFloat((ambientTemp + (Math.random() * 3 + 2)).toFixed(2));
       const irradiance = parseFloat((Math.random() * 500 + 400).toFixed(2));
-      const powerW = parseFloat(((irradiance * 0.25) * (1 - (panel_temp - 25) * 0.004)).toFixed(2));
+      const powerW = parseFloat(((irradiance * 0.25) * (1 - (panelTemp - 25) * 0.004)).toFixed(2));
 
       await Telemetry.create({
         timestamp: new Date(),
